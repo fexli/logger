@@ -1,4 +1,5 @@
-//go:build aix || darwin || dragonfly || freebsd || netbsd || hurd || ios || js || linux || nacl || plan9 || solaris || zos
+//go:build aix || darwin || dragonfly || freebsd || netbsd || hurd || ios || js || (linux && !arm && !arm64) || nacl || plan9 || solaris || zos
+// +build aix darwin dragonfly freebsd netbsd hurd ios js linux,!arm,!arm64 nacl plan9 solaris zos
 
 package logger
 

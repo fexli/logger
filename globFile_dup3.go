@@ -1,4 +1,6 @@
 //go:build linux && (arm64 || arm)
+// +build linux
+// +build arm64 arm
 
 package logger
 

@@ -1,4 +1,19 @@
 //go:build !windows && !(linux && (arm64 || arm)) && !aix && !darwin && !dragonfly && !freebsd && !netbsd && !hurd && !ios && !js && !linux && !nacl && !plan9 && !solaris && !zos
+// +build !windows
+// +build !linux !arm64,!arm
+// +build !aix
+// +build !darwin
+// +build !dragonfly
+// +build !freebsd
+// +build !netbsd
+// +build !hurd
+// +build !ios
+// +build !js
+// +build !linux
+// +build !nacl
+// +build !plan9
+// +build !solaris
+// +build !zos
 
 package logger
 
