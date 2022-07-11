@@ -33,6 +33,7 @@ var (
 	StackColor          = logcolor.NewColor(logcolor.RGB(168, 209, 135))
 
 	EnableGlobLog = false
+	GlobLogFilter = LevelDefault
 )
 
 const (
@@ -65,12 +66,27 @@ func init() {
 		LevelDebug:   logcolor.LightBlueString("DEBUG"),
 	}
 }
+
+// SetGlobLogFilter 设置全局日志记录等级，默认为LevelDefault，即记录所有等级到日志文件，此项目受到Logger本身logLevel限制
+//
+// e.g.
+//  logger.SetGlobLogFilter(logger.LevelFatal | logger.LevelError) // 设置全局日志记录等级为Fatal和Error
+func SetGlobLogFilter(filter LogLevel) {
+	GlobLogFilter = filter
+}
+
+// InitGlobLog 初始化全局日志，name为日志文件名，如果name为空，则使用默认文件名，可选logDesc为日志文件描述
+//
+// e.g.
+//  logger.InitGlobLog("globlog.log", "awesomeProgram v0.1")
 func InitGlobLog(name string, logDesc ...string) {
 	if EnableGlobLog {
 		return
 	}
 	EnableGlobLog = true
-
+	if name == "" {
+		name = "globlog.log"
+	}
 	_ = os.Mkdir("logs", 0764)
 	if info, err := os.Stat(name); info != nil && err == nil {
 		if err = os.Rename(name, path.Join("logs", info.ModTime().Format("2006-01-02-15-04")+"."+utils.RandomStr(2, false, "")+".log")); err != nil {
@@ -295,7 +311,7 @@ func (l *Logger) internalPrinter(dump *LoggInfo) {
 
 	colorableStdout.Println(ent)
 
-	if GlobalFileHandler != nil {
+	if EnableGlobLog && GlobalFileHandler != nil && (dump.Level&GlobLogFilter != 0) {
 		info := ent.GetRawBytes()
 		info = append(info, '\n')
 		if _, e := GlobalFileHandler.WriteString(*(*string)(unsafe.Pointer(&info))); e != nil {
