@@ -3,6 +3,8 @@
 
 package logger
 
+import "runtime"
+
 func initErr() {
-	println("SetStdOutHandle failed: armbe architecture is not supported")
+	println("SetStdOutHandle failed: " + runtime.GOARCH + " architecture with " + runtime.GOOS + " system is not supported")
 }
