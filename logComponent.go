@@ -45,7 +45,7 @@ func WithBacktraceLevelDelta(level int) LogComponent {
 }
 func JmpOutDefer() LogComponent {
 	return newFuncOption(func(o *logOptions) {
-		o.BacktraceLevelDelta += 4
+		o.BacktraceLevelDelta += 2
 	})
 }
 func WithLog(log bool) LogComponent {
