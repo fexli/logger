@@ -7,6 +7,7 @@ import (
 	"github.com/fexli/logger/logcolor"
 	"github.com/fexli/logger/utils"
 	"github.com/modern-go/reflect2"
+	"github.com/xo/terminfo"
 	"os"
 	"path"
 	"runtime"
@@ -65,6 +66,21 @@ func init() {
 		LevelHelp:    logcolor.LightYellowString("HELP"),
 		LevelDebug:   logcolor.LightBlueString("DEBUG"),
 	}
+}
+
+// DisableColor 禁用日志颜色
+func DisableColor() {
+	colorableStdout.DisableColor()
+}
+
+// EnableColor 启用日志颜色
+func EnableColor() {
+	colorableStdout.EnableColor()
+}
+
+// ForceSetColor 强制设置日志颜色
+func ForceSetColor(colorMode terminfo.ColorLevel) {
+	colorableStdout.ForceSetColor(colorMode)
 }
 
 // SetGlobLogFilter 设置全局日志记录等级，默认为LevelDefault，即记录所有等级到日志文件，此项目受到Logger本身logLevel限制
