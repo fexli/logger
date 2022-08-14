@@ -41,6 +41,10 @@ func Colorable(file *os.File) *WriterConsole {
 func (w *WriterConsole) EnableColor() {
 	w.colorLevel = colorLevel
 }
+func (w *WriterConsole) ForceSetColor(colorMode terminfo.ColorLevel) *WriterConsole {
+	w.colorLevel = colorMode
+	return w
+}
 func (w *WriterConsole) DisableColor() {
 	w.colorLevel = terminfo.ColorLevelNone
 }
