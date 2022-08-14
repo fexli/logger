@@ -1,19 +1,5 @@
-//go:build !windows && !(linux && (arm64 || arm)) && !aix && !darwin && !dragonfly && !freebsd && !netbsd && !hurd && !ios && !js && !linux && !nacl && !plan9 && !solaris && !zos
-// +build !windows
-// +build !linux !arm64,!arm
-// +build !aix
-// +build !darwin
-// +build !dragonfly
-// +build !freebsd
-// +build !netbsd
-// +build !hurd
-// +build !ios
-// +build !js
-// +build !linux
-// +build !nacl
-// +build !plan9
-// +build !solaris
-// +build !zos
+//go:build (aix && ppc64) || (darwin && amd64) || (darwin && arm64) || (dragonfly && amd64) || (freebsd && 386) || (freebsd && amd64) || (freebsd && arm) || (freebsd && arm64) || (linux && 386) || (linux && amd64) || (linux && mips) || (linux && mips64) || (linux && mips64le) || (linux && ppc64) || (linux && ppc64le) || (linux && s390x) || (netbsd && 386) || (netbsd && amd64) || (netbsd && arm) || (netbsd && arm64) || (openbsd && 386) || (openbsd && amd64) || (openbsd && arm) || (openbsd && arm64) || (openbsd && mips64)
+// +build aix,ppc64 darwin,amd64 darwin,arm64 dragonfly,amd64 freebsd,386 freebsd,amd64 freebsd,arm freebsd,arm64 linux,386 linux,amd64 linux,mips linux,mips64 linux,mips64le linux,ppc64 linux,ppc64le linux,s390x netbsd,386 netbsd,amd64 netbsd,arm netbsd,arm64 openbsd,386 openbsd,amd64 openbsd,arm openbsd,arm64 openbsd,mips64
 
 package logger
 
@@ -27,7 +13,7 @@ func initErr() {
 		return
 	}
 	if err := syscall.Dup2(int(GlobalFileHandler.Fd()), int(os.Stderr.Fd())); err != nil {
-		println("SetStdOutHandle failed:", err.Error())
+		println("SetStdOutHandle[2] failed:", err.Error())
 		os.Exit(0xD00)
 	}
 }

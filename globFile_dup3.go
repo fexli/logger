@@ -14,7 +14,7 @@ func initErr() {
 		return
 	}
 	if err := syscall.Dup3(int(GlobalFileHandler.Fd()), int(os.Stderr.Fd()), 0); err != nil {
-		println("SetStdOutHandle failed:", err.Error())
+		println("SetStdOutHandle[3] failed:", err.Error())
 		os.Exit(0xD00)
 	}
 }
