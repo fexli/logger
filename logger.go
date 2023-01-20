@@ -86,15 +86,24 @@ func ForceSetColor(colorMode terminfo.ColorLevel) {
 // SetGlobLogFilter 设置全局日志记录等级，默认为LevelDefault，即记录所有等级到日志文件，此项目受到Logger本身logLevel限制
 //
 // e.g.
-//  logger.SetGlobLogFilter(logger.LevelFatal | logger.LevelError) // 设置全局日志记录等级为Fatal和Error
+//
+//	logger.SetGlobLogFilter(logger.LevelFatal | logger.LevelError) // 设置全局日志记录等级为Fatal和Error
 func SetGlobLogFilter(filter LogLevel) {
 	GlobLogFilter = filter
+}
+
+// _pause
+func _pause() {
+	print("请勿在同一目录下启动多个终端，输入回车以退出...\n")
+	b := make([]byte, 1)
+	_, _ = os.Stdin.Read(b)
 }
 
 // InitGlobLog 初始化全局日志，name为日志文件名，如果name为空，则使用默认文件名，可选logDesc为日志文件描述
 //
 // e.g.
-//  logger.InitGlobLog("globlog.log", "awesomeProgram v0.1")
+//
+//	logger.InitGlobLog("globlog.log", "awesomeProgram v0.1")
 func InitGlobLog(name string, logDesc ...string) {
 	if EnableGlobLog {
 		return
@@ -106,16 +115,19 @@ func InitGlobLog(name string, logDesc ...string) {
 	_ = os.Mkdir("logs", 0764)
 	if info, err := os.Stat(name); info != nil && err == nil {
 		if err = os.Rename(name, path.Join("logs", info.ModTime().Format("2006-01-02-15-04")+"."+utils.RandomStr(2, false, "")+".log")); err != nil {
+			_pause()
 			os.Exit(0xD01)
 		}
 	}
 	file, e := os.OpenFile(name, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_SYNC, 0764)
 	if e != nil {
+		_pause()
 		os.Exit(0xD00)
 	}
 	if len(logDesc) > 0 {
 		_, err := file.Write([]byte(logDesc[0] + " Running Log [Started At " + time.Now().String() + "]\n"))
 		if err != nil {
+			_pause()
 			os.Exit(0xD02)
 		}
 	}
