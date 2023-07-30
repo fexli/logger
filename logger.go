@@ -57,14 +57,14 @@ func init() {
 	RootLogger = GetLogger("sys", false)
 
 	LogPrefix = map[LogLevel]*logcolor.LogTextCtx{
-		LevelFatal:   logcolor.ColorString("FATAL", logcolor.NewColor(logcolor.TextBlack, logcolor.OpInverse)),
-		LevelNotice:  logcolor.LightCyanString("NOTICE"),
-		LevelError:   logcolor.LightRedString("ERROR"),
+		LevelFatal:   logcolor.ColorString("FATL", logcolor.NewColor(logcolor.TextBlack, logcolor.OpInverse)),
+		LevelNotice:  logcolor.LightCyanString("NOTE"),
+		LevelError:   logcolor.LightRedString("EROR"),
 		LevelWarning: logcolor.LightMagentaString("WARN"),
-		LevelSystem:  logcolor.LightGreenString("SYSTEM"),
+		LevelSystem:  logcolor.LightGreenString("SYST"),
 		LevelCommon:  logcolor.WhiteString("INFO"),
 		LevelHelp:    logcolor.LightYellowString("HELP"),
-		LevelDebug:   logcolor.LightBlueString("DEBUG"),
+		LevelDebug:   logcolor.LightBlueString("DBUG"),
 	}
 }
 
