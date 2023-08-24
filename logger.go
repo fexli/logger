@@ -136,6 +136,100 @@ func InitGlobLog(name string, logDesc ...string) {
 	initErr()
 }
 
+func defaultConfig() Config {
+	return Config{
+		Name: "globlog.log",
+		Desc: "",
+		OldLogPath: func(info os.FileInfo) string {
+			return path.Join("logs", info.ModTime().Format("2006-01-02-15-04")+"."+utils.RandomStr(2, false, "")+".log")
+		},
+	}
+}
+
+// InitGlobLogWithConfig 初始化全局日志，name为日志文件名，如果name为空，则使用默认文件名，可选logDesc为日志文件描述
+//
+// e.g.
+//
+//	logger.InitGlobLogWithConfig("globlog.log", "awesomeProgram v0.1")
+func InitGlobLogWithConfig(config ...Config) {
+	if EnableGlobLog {
+		return
+	}
+	EnableGlobLog = true
+	var current Config = defaultConfig()
+	if len(config) != 0 {
+		if config[0].Name != "" {
+			current.Name = config[0].Name
+		}
+		if config[0].Desc != "" {
+			current.Desc = config[0].Desc
+		}
+		if config[0].OldLogPath != nil {
+			current.OldLogPath = config[0].OldLogPath
+		}
+		if config[0].MaxLogTime != 0 {
+			current.MaxLogTime = config[0].MaxLogTime
+		}
+		if len(config[0].SliceWhen) != 0 {
+			current.SliceWhen = config[0].SliceWhen
+		}
+	}
+	_ = os.Mkdir("logs", 0764)
+	if info, err := os.Stat(current.Name); info != nil && err == nil {
+		if err = os.Rename(current.Name, current.OldLogPath(info)); err != nil {
+			_pause()
+			os.Exit(0xD01)
+		}
+	}
+	file, e := os.OpenFile(current.Name, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_SYNC, 0764)
+	if e != nil {
+		_pause()
+		os.Exit(0xD00)
+	}
+	if current.Desc != "" {
+		_, err := file.Write([]byte(current.Desc + " Running Log [Started At " + time.Now().String() + "]\n"))
+		if err != nil {
+			_pause()
+			os.Exit(0xD02)
+		}
+	}
+	GlobalFileHandler = file
+	if current.MaxLogTime != 0 || len(current.SliceWhen) != 0 {
+		go sliceGlobByTime(current)
+	}
+	initErr()
+}
+
+func sliceGlobByTime(current Config) {
+	for {
+		next := findNextByWhen(current)
+		time.Sleep(next)
+		info, err := os.Stat(current.Name)
+		if err != nil {
+			continue
+		}
+		if GlobalFileHandler != nil {
+			fr := GlobalFileHandler
+			GlobalFileHandler = nil
+			fr.Close()
+		}
+		if err = os.Rename(current.Name, current.OldLogPath(info)); err != nil {
+			continue
+		}
+		file, e := os.OpenFile(current.Name, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_SYNC, 0764)
+		if e != nil {
+			continue
+		}
+		if current.Desc != "" {
+			_, err := file.Write([]byte(current.Desc + " Running Log [Started At " + time.Now().String() + "]\n"))
+			if err != nil {
+				continue
+			}
+		}
+		GlobalFileHandler = file
+	}
+}
+
 // LogLevel 日志等级
 type (
 	LogLevel   uint8
